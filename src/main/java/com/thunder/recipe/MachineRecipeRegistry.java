@@ -104,16 +104,18 @@ public class MachineRecipeRegistry {
         }
         //for gene vials
         if(reagent.getItem().equals(ItemRegistry.GENE_VIAL)){
-            NBTTagCompound tag = Utilities.getNbt(reagent);
-            if(tag.hasKey(GeneVial.GENE_KEY))
+            NBTTagCompound tag = reagent.getTagCompound();
+            if(tag != null && tag.hasKey(GeneVial.GENE_KEY))
                 return tag.getInteger(GeneVial.GENE_KEY);
             //for blood vials
         }else if(reagent.getItem().equals(ItemRegistry.ITEM_BLOOD)){
-            NBTTagCompound tag = Utilities.getNbt(reagent);
-            String blood = tag.getString(ItemBlood.BLOOD_KEY);
-            for(Map.Entry<String, Integer> entry : BLOOD_MAP.entrySet()){
-                if(entry.getKey().equalsIgnoreCase(blood))
-                    return entry.getValue();
+            NBTTagCompound tag = reagent.getTagCompound();
+            if(tag != null) {
+                String blood = tag.getString(ItemBlood.BLOOD_KEY);
+                for(Map.Entry<String, Integer> entry : BLOOD_MAP.entrySet()){
+                    if(entry.getKey().equalsIgnoreCase(blood))
+                        return entry.getValue();
+                }
             }
         }
         return 0;

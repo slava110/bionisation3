@@ -28,8 +28,8 @@ public class TileDNAFormer extends TileBMachine {
         if(!items.get(2).getItem().equals(ItemRegistry.DNA_PATTERN)) return false;
         int gene = MachineRecipeRegistry.getInstance().getDNAFormerOutput(items.get(1));
         if(gene == 0) return false;
-        NBTTagCompound tag = Utilities.getNbt(items.get(2));
-        if(tag.hasKey(DNAPattern.DNA_ARRAY_KEY)){
+        NBTTagCompound tag = items.get(2).getTagCompound();
+        if(tag != null && tag.hasKey(DNAPattern.DNA_ARRAY_KEY)){
             boolean isFull = true;
             boolean hasGene = false;
             for(int i : tag.getIntArray(DNAPattern.DNA_ARRAY_KEY)){
@@ -48,8 +48,8 @@ public class TileDNAFormer extends TileBMachine {
         int gene = MachineRecipeRegistry.getInstance().getDNAFormerOutput(items.get(1));
         this.decrStackSize(1, 1);
         ItemStack dnaPattern = items.get(2);
-        NBTTagCompound tag = Utilities.getNbt(dnaPattern);
-        if(tag.hasKey(DNAPattern.DNA_ARRAY_KEY)){
+        NBTTagCompound tag = dnaPattern.getTagCompound();
+        if(tag != null && tag.hasKey(DNAPattern.DNA_ARRAY_KEY)){
             int [] dnaArr = tag.getIntArray(DNAPattern.DNA_ARRAY_KEY);
             for (int i = 0; i < dnaArr.length; i++) {
                 if(dnaArr[i] == 0) {
@@ -60,7 +60,7 @@ public class TileDNAFormer extends TileBMachine {
         }else{
             int [] dna_array = new int[8];
             dna_array[0] = gene;
-            tag.setIntArray(DNAPattern.DNA_ARRAY_KEY, dna_array);
+            Utilities.getNbt(dnaPattern).setIntArray(DNAPattern.DNA_ARRAY_KEY, dna_array);
         }
     }
 

@@ -39,12 +39,12 @@ public class CreativeVial extends ItemBionisation {
         ItemStack stack = playerIn.getHeldItemMainhand();
         if(!worldIn.isRemote) {
             if(stack.hasTagCompound()){
-                NBTTagCompound nbt = Utilities.getNbt(stack);
+                NBTTagCompound nbt = stack.getTagCompound();
                 IBioPlayer cap = playerIn.getCapability(BioPlayerProvider.BIO_PLAYER_CAPABILITY, null);
                 cap.addEffect(Utilities.getNewEffectCopy(Utilities.findEffectById(nbt.getInteger(Utilities.getModIdString("id")))), playerIn);
             }
         }
-        return new ActionResult(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+        return new ActionResult<>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class CreativeVial extends ItemBionisation {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if(stack.hasTagCompound()){
-            NBTTagCompound nbt = Utilities.getNbt(stack);
+            NBTTagCompound nbt = stack.getTagCompound();
             String name = nbt.getString(Utilities.getModIdString("name")).replaceAll(" ", "_").toLowerCase();
             tooltip.add(I18n.format("tooltip.creativevial.sample") + " " + TextFormatting.GREEN + I18n.format("tooltip.effect." + name));
             tooltip.add(I18n.format("tooltip.creativevial.id") + " " + TextFormatting.GREEN + nbt.getInteger(Utilities.getModIdString("id")));

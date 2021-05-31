@@ -33,9 +33,9 @@ public class Vial extends ItemBionisation {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         ItemStack stack = playerIn.getHeldItemMainhand();
         if(!worldIn.isRemote) {
-            NBTTagCompound nbt = Utilities.getNbt(stack);
+            NBTTagCompound nbt = stack.getTagCompound();
             IBioPlayer cap = playerIn.getCapability(BioPlayerProvider.BIO_PLAYER_CAPABILITY, null);
-            if(!nbt.hasKey(Utilities.getModIdString("sdna"))) {
+            if(nbt != null && !nbt.hasKey(Utilities.getModIdString("sdna"))) {
                 String dna = "";
                 for (IBioSample smp : cap.getEffectList()) {
                     if (smp instanceof IVirus) {
@@ -49,7 +49,7 @@ public class Vial extends ItemBionisation {
                     nbt.setString(Utilities.getModIdString("sdna"), dna);
             }
         }
-        return new ActionResult(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+        return new ActionResult<>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
     }
 
     @SideOnly(Side.CLIENT)
@@ -59,8 +59,8 @@ public class Vial extends ItemBionisation {
 
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        if(stack.hasTagCompound() && Utilities.getNbt(stack).hasKey(Utilities.getModIdString("sdna"))){
-            NBTTagCompound nbt = Utilities.getNbt(stack);
+        if(stack.hasTagCompound() && stack.getTagCompound().hasKey(Utilities.getModIdString("sdna"))){
+            NBTTagCompound nbt = stack.getTagCompound();
             String [] dnas = nbt.getString(Utilities.getModIdString("sdna")).split("_");
             tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.vial.samples") + " ");
             for (String s : dnas){

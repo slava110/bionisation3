@@ -27,20 +27,16 @@ public class TileVirusReplicator extends TileBMachine {
         if(items.get(1).isEmpty() || items.get(2).isEmpty()) return false;
         if(!items.get(1).getItem().equals(ItemRegistry.DNA_PATTERN)) return false;
         if(!items.get(2).getItem().equals(ItemRegistry.VIRUS_SPRAYER)) return false;
-        NBTTagCompound tag1 = Utilities.getNbt(items.get(1));
-        NBTTagCompound tag2 = Utilities.getNbt(items.get(2));
-        if(tag2.hasKey(VirusSprayer.DNA_KEY)) return false;
-        if(!tag1.hasKey(DNAPattern.DNA_ARRAY_KEY))
-            return false;
-        else{
-            boolean empty = true;
-            for(int i : tag1.getIntArray(DNAPattern.DNA_ARRAY_KEY)){
-                if(i != 0)
-                    empty = false;
-            }
-            if(empty) return false;
+        NBTTagCompound tag1 = items.get(1).getTagCompound();
+        NBTTagCompound tag2 = items.get(2).getTagCompound();
+        if(tag2 != null && tag2.hasKey(VirusSprayer.DNA_KEY)) return false;
+        if(tag1 == null || !tag1.hasKey(DNAPattern.DNA_ARRAY_KEY)) return false;
+
+        for(int i : tag1.getIntArray(DNAPattern.DNA_ARRAY_KEY)){
+            if(i != 0)
+                return true;
         }
-        return true;
+        return false;
     }
 
     @Override

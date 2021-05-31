@@ -98,10 +98,8 @@ public class Utilities {
     public static boolean isBioArmorInfected(NonNullList<ItemStack> armor){
         String key = Utilities.getModIdString("eff_list");
         for(ItemStack s : armor){
-            if(!s.isEmpty()){
-                NBTTagCompound tag = getNbt(s);
-                if(tag.hasKey(key)) return true;
-            }
+            if(!s.isEmpty() && s.hasTagCompound() && s.getTagCompound().hasKey(key))
+                return true;
         }
         return false;
     }

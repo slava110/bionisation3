@@ -27,8 +27,7 @@ public class TileVaccineCreator extends TileBMachine {
         if(stackVial.isEmpty() || stackInj.isEmpty()) return false;
         if(!stackVial.getItem().equals(ItemRegistry.VIAL)) return false;
         if(!stackInj.getItem().equals(ItemRegistry.VACCINE_INJECTOR)) return false;
-        NBTTagCompound nbt = Utilities.getNbt(stackVial);
-        if(!nbt.hasKey(Utilities.getModIdString("sdna"))) return false;
+        if(!stackVial.hasTagCompound() || !stackVial.getTagCompound().hasKey(Utilities.getModIdString("sdna"))) return false;
         if(!items.get(3).isEmpty()) return false;
         return true;
     }
@@ -37,7 +36,7 @@ public class TileVaccineCreator extends TileBMachine {
     public void processResult(NonNullList<ItemStack> items) {
         ItemStack stackVial = items.get(1);
         ItemStack stackInj = items.get(2);
-        NBTTagCompound tagVial = Utilities.getNbt(stackVial);
+        NBTTagCompound tagVial = stackVial.getTagCompound();
         String [] dnas = tagVial.getString(Utilities.getModIdString("sdna")).split("_");
         int index = Utilities.random.nextInt(dnas.length);
         String dna = dnas[index];
@@ -52,9 +51,11 @@ public class TileVaccineCreator extends TileBMachine {
         for(String s : dnas){
             if(!s.isEmpty()) newDna += s + "_";
         }
-        if(newDna.isEmpty()) tagVial.removeTag(Utilities.getModIdString("sdna"));
-        else
-            tagVial.setString(Utilities.getModIdString("sdna"), newDna);
+        if(newDna.isEmpty()) {
+            if(tagVial != null)
+                tagVial.removeTag(Utilities.getModIdString("sdna"));
+        } else
+            Utilities.getNbt(stackVial).setString(Utilities.getModIdString("sdna"), newDna);
     }
 
     @Override

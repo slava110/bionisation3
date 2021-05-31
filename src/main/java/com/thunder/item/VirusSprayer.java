@@ -35,8 +35,8 @@ public class VirusSprayer extends ItemBionisation {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         ItemStack stack = playerIn.getHeldItemMainhand();
         if(!playerIn.world.isRemote){
-            NBTTagCompound tag = Utilities.getNbt(stack);
-            if(tag.hasKey(DNA_KEY)){
+            NBTTagCompound tag = stack.getTagCompound();
+            if(tag != null && tag.hasKey(DNA_KEY)){
                 String dna = tag.getString(DNA_KEY);
                 IBioPlayer cap = playerIn.getCapability(BioPlayerProvider.BIO_PLAYER_CAPABILITY, null);
                 CustomVirus virus = new CustomVirus(Utilities.random.nextInt(Integer.MAX_VALUE - 1000) + 1000, -1, Utilities.getPowerFromImmunity(cap.getImmunityLevel()), true, "Virus " + "(" + dna + ")", dna);
@@ -44,7 +44,7 @@ public class VirusSprayer extends ItemBionisation {
                 tag.removeTag(DNA_KEY);
             }
         }
-        return new ActionResult(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+        return new ActionResult<>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
     }
 
     @SideOnly(Side.CLIENT)
@@ -54,8 +54,8 @@ public class VirusSprayer extends ItemBionisation {
 
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        NBTTagCompound tag = Utilities.getNbt(stack);
-        if(tag.hasKey(DNA_KEY)){
+        NBTTagCompound tag = stack.getTagCompound();
+        if(tag != null && tag.hasKey(DNA_KEY)){
             String [] dna_array = tag.getString(DNA_KEY).split(":");
             tooltip.add(I18n.format("tooltip.dna"));
             for (int i = 0; i < dna_array.length; i++) {

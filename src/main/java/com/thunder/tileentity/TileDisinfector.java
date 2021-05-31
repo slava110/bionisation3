@@ -40,12 +40,13 @@ public class TileDisinfector extends TileBMachine {
     public void processResult(NonNullList<ItemStack> items) {
         this.decrStackSize(16, 1);
         for (int i = 1; i <= 15; i++) {
-            if(!items.get(i).isEmpty()){
-                NBTTagCompound tag = Utilities.getNbt(items.get(i));
-                if(tag.hasKey(KEY))
+            ItemStack stack = items.get(i);
+            if(!stack.isEmpty() && stack.hasTagCompound()){
+                NBTTagCompound tag = stack.getTagCompound();
+                if(tag.hasKey(KEY)) {
                     tag.removeTag(KEY);
-                if (tag.isEmpty()) {
-                    items.get(i).setTagCompound(null);
+                    if(tag.isEmpty())
+                        stack.setTagCompound(null);
                 }
             }
         }

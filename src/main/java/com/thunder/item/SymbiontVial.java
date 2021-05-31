@@ -40,7 +40,7 @@ public class SymbiontVial extends ItemBionisation {
         ItemStack stack = playerIn.getHeldItemMainhand();
         if(!worldIn.isRemote) {
             if(stack.hasTagCompound()){
-                NBTTagCompound nbt = Utilities.getNbt(stack);
+                NBTTagCompound nbt = stack.getTagCompound();
                 if(nbt.hasKey(SYMBIONT_VIAL_KEY)) {
                     IBioPlayer cap = playerIn.getCapability(BioPlayerProvider.BIO_PLAYER_CAPABILITY, null);
                     String [] symb = nbt.getString(SYMBIONT_VIAL_KEY).split(":");
@@ -55,7 +55,7 @@ public class SymbiontVial extends ItemBionisation {
                 }
             }
         }
-        return new ActionResult(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+        return new ActionResult<>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
     }
 
     @SideOnly(Side.CLIENT)
@@ -65,8 +65,8 @@ public class SymbiontVial extends ItemBionisation {
 
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        NBTTagCompound tag = Utilities.getNbt(stack);
-        if(tag.hasKey(SYMBIONT_VIAL_KEY)){
+        NBTTagCompound tag = stack.getTagCompound();
+        if(tag != null && tag.hasKey(SYMBIONT_VIAL_KEY)){
             String [] symb = tag.getString(SYMBIONT_VIAL_KEY).split(":");
             tooltip.add(I18n.format("tooltip.symbiontvial.symbiont") + " " + TextFormatting.GREEN + I18n.format("tooltip.symbiontvial." + symb[0]));
             tooltip.add(I18n.format("tooltip.creativevial.power") + " " + TextFormatting.GREEN + (Integer.parseInt(symb[1]) + 1));

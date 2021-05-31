@@ -44,7 +44,7 @@ public class PotionCure extends ItemBionisation {
         if(entityLiving instanceof EntityPlayer && !worldIn.isRemote) {
             EntityPlayer player = (EntityPlayer)entityLiving;
             if(stack.hasTagCompound()){
-                NBTTagCompound nbt = Utilities.getNbt(stack);
+                NBTTagCompound nbt = stack.getTagCompound();
                 IBioPlayer cap = player.getCapability(BioPlayerProvider.BIO_PLAYER_CAPABILITY, null);
                 cap.addEffect(Utilities.getNewEffectCopy(Utilities.findEffectById(nbt.getInteger(BKEY_ID))), player);
             }
@@ -76,14 +76,14 @@ public class PotionCure extends ItemBionisation {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         playerIn.setActiveHand(handIn);
-        return new ActionResult(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+        return new ActionResult<>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
        if(stack.hasTagCompound()){
-           NBTTagCompound nbt = Utilities.getNbt(stack);
+           NBTTagCompound nbt = stack.getTagCompound();
            if(nbt.hasKey(BKEY_ID)) {
                String name = Utilities.findEffectById(nbt.getInteger(BKEY_ID)).getName().replace("Cure: ", "");
                tooltip.add(I18n.format("tooltip.cure") + " " + ChatFormatting.GREEN + I18n.format("tooltip.effect." + name.replaceAll(" ", "_").toLowerCase()));

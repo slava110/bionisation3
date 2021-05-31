@@ -210,8 +210,8 @@ public abstract class AbstractEffect implements IBioSample, Serializable {
 
     public static void removeEffect(IBioSample sample, NonNullList<ItemStack> inventory){
         for (ItemStack stack : inventory) {
-            if (!stack.isEmpty()) {
-                NBTTagCompound nbt = Utilities.getNbt(stack);
+            if (!stack.isEmpty() && stack.hasTagCompound()) {
+                NBTTagCompound nbt = stack.getTagCompound();
                 if (nbt.hasKey(ItemManager.KEY)) {
                     try {
                         List<ItemManager.SampleBundle> effs = Utilities.listFromNBT((NBTTagList) nbt.getTag(ItemManager.KEY));

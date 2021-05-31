@@ -37,8 +37,9 @@ public class VaccineInjector extends ItemBionisation {
         ItemStack stack = playerIn.getHeldItemMainhand();
         if(!worldIn.isRemote) {
             if(stack.hasTagCompound()){
-                NBTTagCompound nbt = Utilities.getNbt(stack);
-                if(!nbt.hasKey(Utilities.getModIdString("vdna"))) return new ActionResult(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+                NBTTagCompound nbt = stack.getTagCompound();
+                if(!nbt.hasKey(Utilities.getModIdString("vdna")))
+                    return new ActionResult<>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
                 IBioPlayer cap = playerIn.getCapability(BioPlayerProvider.BIO_PLAYER_CAPABILITY, null);
                 String stab = nbt.getString(Utilities.getModIdString("vstability"));
                 String dna = nbt.getString(Utilities.getModIdString("vdna"));
@@ -49,9 +50,11 @@ public class VaccineInjector extends ItemBionisation {
                 }
                 nbt.removeTag(Utilities.getModIdString("vdna"));
                 nbt.removeTag(Utilities.getModIdString("vstability"));
+                if(nbt.isEmpty())
+                    stack.setTagCompound(null);
             }
         }
-        return new ActionResult(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+        return new ActionResult<>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
     }
 
     @SideOnly(Side.CLIENT)
@@ -62,8 +65,8 @@ public class VaccineInjector extends ItemBionisation {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if(stack.hasTagCompound()){
-            NBTTagCompound nbt = Utilities.getNbt(stack);
-            if(Utilities.getNbt(stack).hasKey(Utilities.getModIdString("vdna"))) {
+            NBTTagCompound nbt = stack.getTagCompound();
+            if(nbt.hasKey(Utilities.getModIdString("vdna"))) {
                 String stab = nbt.getString(Utilities.getModIdString("vstability"));
                 tooltip.add(I18n.format("tooltip.injector.vaccine") + " " + (stab.equals("Stable") ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("tooltip.injector." + stab.toLowerCase()));
                 tooltip.add(I18n.format("tooltip.injector.dna") + " " + TextFormatting.GREEN + nbt.getString(Utilities.getModIdString("vdna")));

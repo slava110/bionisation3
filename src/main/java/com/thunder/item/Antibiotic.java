@@ -57,20 +57,25 @@ public class Antibiotic extends ItemBionisation {
             if(stack.hasTagCompound()) {
                 IBioPlayer cap = playerIn.getCapability(BioPlayerProvider.BIO_PLAYER_CAPABILITY, null);
                 int index = playerIn.inventory.currentItem;
-                NBTTagCompound nbt = Utilities.getNbt(stack);
-                if(nbt.getString(ANT_TYPE).equals("weak"))
-                    if (!cap.isEffectActive(Constants.ID_CURE_WEAKANTIBIOTIC)) {
-                        cap.addEffect(Utilities.getNewEffectCopy(Utilities.findEffectById(Constants.ID_CURE_WEAKANTIBIOTIC)), playerIn);
-                        Utilities.decreaseOrRemove(playerIn, index);
+                NBTTagCompound nbt = stack.getTagCompound();
+                if(nbt != null && nbt.hasKey(ANT_TYPE)) {
+                    switch (nbt.getString(ANT_TYPE)) {
+                        case "weak":
+                            if (!cap.isEffectActive(Constants.ID_CURE_WEAKANTIBIOTIC)) {
+                                cap.addEffect(Utilities.getNewEffectCopy(Utilities.findEffectById(Constants.ID_CURE_WEAKANTIBIOTIC)), playerIn);
+                                Utilities.decreaseOrRemove(playerIn, index);
+                            }
+                            break;
+                        case "strong":
+                            if (!cap.isEffectActive(Constants.ID_CURE_STRONGANTIBIOTIC)) {
+                                cap.addEffect(Utilities.getNewEffectCopy(Utilities.findEffectById(Constants.ID_CURE_STRONGANTIBIOTIC)), playerIn);
+                                Utilities.decreaseOrRemove(playerIn, index);
+                            }
                     }
-                if(nbt.getString(ANT_TYPE).equals("strong"))
-                    if (!cap.isEffectActive(Constants.ID_CURE_STRONGANTIBIOTIC)) {
-                        cap.addEffect(Utilities.getNewEffectCopy(Utilities.findEffectById(Constants.ID_CURE_STRONGANTIBIOTIC)), playerIn);
-                        Utilities.decreaseOrRemove(playerIn, index);
-                    }
+                }
             }
         }
-        return new ActionResult(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+        return new ActionResult<>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
     }
 
     @SideOnly(Side.CLIENT)
@@ -81,8 +86,8 @@ public class Antibiotic extends ItemBionisation {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if(stack.hasTagCompound()){
-            NBTTagCompound nbt = Utilities.getNbt(stack);
-                tooltip.add(ChatFormatting.GREEN + (nbt.getString(ANT_TYPE).equals("weak") ? I18n.format("tooltip.weakantibiotic") : I18n.format("tooltip.strongantibiotic")));
+            NBTTagCompound nbt = stack.getTagCompound();
+            tooltip.add(ChatFormatting.GREEN + (nbt.getString(ANT_TYPE).equals("weak") ? I18n.format("tooltip.weakantibiotic") : I18n.format("tooltip.strongantibiotic")));
         }
     }
 
@@ -95,16 +100,9 @@ public class Antibiotic extends ItemBionisation {
     }
 
     public static ItemStack getAntibiotic(int type){
-        if(type == 0){
-            ItemStack stack = new ItemStack(ItemRegistry.ANTIBIOTIC);
-            NBTTagCompound nbt = Utilities.getNbt(stack);
-            nbt.setString(ANT_TYPE, "weak");
-            return stack;
-        }else{
-            ItemStack stack = new ItemStack(ItemRegistry.ANTIBIOTIC);
-            NBTTagCompound nbt = Utilities.getNbt(stack);
-            nbt.setString(ANT_TYPE, "strong");
-            return stack;
-        }
+        ItemStack stack = new ItemStack(ItemRegistry.ANTIBIOTIC);
+        NBTTagCompound nbt = Utilities.getNbt(stack);
+        nbt.setString(ANT_TYPE, type == 0 ? "weak" : "strong");
+        return stack;
     }
 }

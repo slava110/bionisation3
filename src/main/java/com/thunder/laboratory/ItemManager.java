@@ -95,11 +95,10 @@ public class ItemManager {
     private static void fromPlayerToItems(NonNullList<ItemStack> inventory, List<SampleBundle> effects, String key){
         for (ItemStack stack : inventory){
             if(!stack.isEmpty()){
-                NBTTagCompound nbt = Utilities.getNbt(stack);
                 try {
                     NBTTagList list = Utilities.<SampleBundle>objListToNBT(effects);
                     if (!list.isEmpty()) {
-                        nbt.setTag(key, list);
+                        Utilities.getNbt(stack).setTag(key, list);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

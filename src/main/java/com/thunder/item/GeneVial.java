@@ -28,8 +28,8 @@ public class GeneVial extends ItemBionisation {
 
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        NBTTagCompound tag = Utilities.getNbt(stack);
-        if (tag.hasKey(GENE_KEY)) {
+        NBTTagCompound tag = stack.getTagCompound();
+        if (tag != null && tag.hasKey(GENE_KEY)) {
             int gene = tag.getInteger(GENE_KEY);
             tooltip.add(I18n.format("tooltip.gene.gene") + " " + (gene == 0 ? TextFormatting.RED + "<" + I18n.format("tooltip.empty") + ">" : TextFormatting.GREEN + "<" + I18n.format("tooltip.gene." + gene) + ">"));
         }

@@ -25,8 +25,8 @@ public class DNAPattern extends ItemBionisation {
 
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        NBTTagCompound tag = Utilities.getNbt(stack);
-        if(!tag.hasKey(DNA_ARRAY_KEY)){
+        NBTTagCompound tag = stack.getTagCompound();
+        if(tag != null && !tag.hasKey(DNA_ARRAY_KEY)){
             int [] dna_array = new int[8];
             tag.setIntArray(DNA_ARRAY_KEY, dna_array);
         }
@@ -34,8 +34,8 @@ public class DNAPattern extends ItemBionisation {
 
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        NBTTagCompound tag = Utilities.getNbt(stack);
-        if (tag.hasKey(DNA_ARRAY_KEY)) {
+        NBTTagCompound tag = stack.getTagCompound();
+        if (tag != null && tag.hasKey(DNA_ARRAY_KEY)) {
             int [] dna_array = tag.getIntArray(DNA_ARRAY_KEY);
             tooltip.add(I18n.format("tooltip.dna"));
             for (int i = 0; i < dna_array.length; i++) {
